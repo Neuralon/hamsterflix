@@ -3319,7 +3319,7 @@ function MovieDetail() {
                  {extractedData.id ? (
                     <div className="absolute inset-0 flex items-center justify-center bg-black">
                        <video autoPlay loop controls className="w-full h-full object-cover z-0 relative">
-                         <source src={`/trailers/trailer_${extractedData.id}.mp4?v=${Date.now()}`} type="video/mp4" />
+                         <source src={`${import.meta.env.VITE_MEDIA_BASE || ""}/trailers/trailer_${extractedData.id}.mp4?v=${Date.now()}`} type="video/mp4" />
                          Your browser does not support the video tag.
                        </video>
                     </div>
