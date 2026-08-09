@@ -1,0 +1,22 @@
+# node_modules
+frontend/node_modules
+frontend/dist
+
+# python
+__pycache__/
+*.pyc
+venv
+.env
+
+# massive files
+hamsterflix.db
+frontend/hamsterflix.db
+
+# public media files (keep actors and icons, ignore trailers and posters)
+frontend/public/posters/
+frontend/public/posters_ai/
+frontend/public/posters_real/
+frontend/public/trailers/
+frontend/public/voiceovers/
+frontend/public/trailer_scripts.json
+*.log
