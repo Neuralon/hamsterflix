@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useParams, useNavigate } from 'react-router-dom';
-import { Search, Bell, Info, Play, ChevronDown, Plus, ArrowLeft, ChevronLeft, ChevronRight, FileText } from 'lucide-react';
+import { Search, Bell, Info, Play, ChevronDown, Plus, ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const FEATURED_MOVIE = {
   title: "Hamster's Great Escape",
