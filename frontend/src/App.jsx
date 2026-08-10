@@ -263,10 +263,11 @@ function Hero({ featured }) {
     }
   };
 
+  const movieImg = `${import.meta.env.VITE_MEDIA_BASE || ""}${heroMovie.heroImage}`;
   return (
     <div className="relative h-[80vh] w-full">
       <div className="absolute inset-0">
-        <img src={heroMovie.heroImage} alt="Hero Background" className="w-full h-full object-cover" />
+        <img src={movieImg} alt="Hero Background" className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-netflix-black via-transparent to-black/50"></div>
         <div className="absolute inset-0 bg-gradient-to-r from-netflix-black/80 via-netflix-black/40 to-transparent"></div>
       </div>
@@ -334,7 +335,7 @@ function Row({ title, movies }) {
         >
           {movies.map((movie, idx) => (
             <Link key={`${movie.uid || movie.id}-${idx}`} to={`/movie/${movie.uid || movie.id}`} className="relative flex-none w-[140px] md:w-[200px] h-[210px] md:h-[300px] transition-all duration-300 hover:scale-110 hover:z-20 origin-center cursor-pointer rounded-md overflow-hidden shadow-lg border border-transparent hover:border-gray-500">
-              <img src={movie.img || movie.poster_filename || '/posters_real/poster_real_1.png'} alt={movie.title} className="w-full h-full object-cover" />
+              <img src={`${import.meta.env.VITE_MEDIA_BASE || ""}${movie.img || '/' + movie.poster_filename || '/posters_real/poster_real_1.png'}`} alt={movie.title} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
                 <p className="text-white font-bold text-sm md:text-base drop-shadow-md text-center">{movie.title}</p>
               </div>
@@ -473,7 +474,7 @@ function Home({ filterType = 'all' }) {
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-10">
                 {searchResults.map((movie, idx) => (
                   <Link key={idx} to={`/browse/${movie.uid}`} className="group relative aspect-[2/3] bg-gray-900 rounded-md overflow-hidden cursor-pointer">
-                    <img src={movie.img || movie.poster_filename || '/posters_real/poster_real_1.png'} alt={movie.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                    <img src={`${import.meta.env.VITE_MEDIA_BASE || ""}${movie.img || '/' + movie.poster_filename || '/posters_real/poster_real_1.png'}`} alt={movie.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
                       <div className="text-white font-bold text-sm md:text-md leading-tight mb-1">{movie.title}</div>
                       <div className="flex items-center gap-2 mt-2">
@@ -3488,7 +3489,8 @@ function MovieDetail() {
       if (!extractedData) return <div className="text-white pt-32 text-center text-2xl font-bold">Loading...</div>;
 
       const details = extractedData;
-      const movieImg = details.img || '/posters_real/poster_real_1.png';
+      const movieImg = details.img || (details.poster_filename ? '/' + details.poster_filename : '/posters_real/poster_real_1.png');
+      const absoluteMovieImg = `${import.meta.env.VITE_MEDIA_BASE || ""}${movieImg}`;
 
       return (
         <div className="min-h-screen bg-netflix-black text-white">
@@ -3523,7 +3525,7 @@ function MovieDetail() {
             <>
               {/* Background Blur Effect */}
               <div className="fixed inset-0 z-0">
-                <img src={movieImg} alt="background blur" className="w-full h-full object-cover opacity-20 blur-3xl scale-110" />
+                <img src={absoluteMovieImg} alt="background blur" className="w-full h-full object-cover opacity-20 blur-3xl scale-110" />
                 <div className="absolute inset-0 bg-netflix-black/80"></div>
               </div>
 
@@ -3536,7 +3538,7 @@ function MovieDetail() {
                   {/* Poster Column */}
                   <div className="w-full md:w-1/3 shrink-0">
                     <div className="rounded-xl overflow-hidden shadow-[0_0_40px_rgba(0,0,0,0.8)] border border-gray-800 relative group">
-                      <img src={movieImg} alt={details.title} className="w-full h-auto object-cover" />
+                      <img src={absoluteMovieImg} alt={details.title} className="w-full h-auto object-cover" />
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                          <button onClick={() => setIsPlaying(true)} className="bg-netflix-red text-white rounded-full p-4 hover:scale-110 transition-transform shadow-lg">
                            <Play className="w-8 h-8 fill-current ml-1" />
@@ -3574,7 +3576,7 @@ function MovieDetail() {
                           return castList.map((actor, idx) => (
                             <div key={idx} className="flex flex-col items-center gap-2 flex-none w-24 text-center group cursor-pointer">
                               <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gray-700 shadow-md group-hover:border-netflix-red transition-colors bg-gray-800 flex items-center justify-center">
-                                <img src={actor.img} alt={actor.name} className="w-full h-full object-cover text-transparent" 
+                                <img src={`${import.meta.env.VITE_MEDIA_BASE || ""}${actor.img}`} alt={actor.name} className="w-full h-full object-cover text-transparent" 
                                      onError={(e) => { e.target.style.display = 'none'; e.target.parentNode.innerHTML = '<span class="text-xs text-gray-500">Processing...</span>'; }} />
                               </div>
                               <div>
@@ -3645,7 +3647,7 @@ function VoiceDetail() {
            <ArrowLeft className="w-5 h-5" /> Back
         </button>
         <div className="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden border-4 border-netflix-red shadow-[0_0_20px_rgba(229,9,20,0.5)]">
-           <img src={movie.img || movie.poster_filename} alt={movie.title} className="w-full h-full object-cover" />
+           <img src={`${import.meta.env.VITE_MEDIA_BASE || ""}${movie.img || '/' + movie.poster_filename}`} alt={movie.title} className="w-full h-full object-cover" />
         </div>
         <h1 className="text-3xl font-bold mb-2">{movie.title}</h1>
         <p className="text-gray-400 mb-8 font-medium">Original Voiceover Generation</p>
@@ -3664,7 +3666,7 @@ function VoiceDetail() {
       
       {/* Background Blur */}
       <div className="fixed inset-0 z-0 pointer-events-none">
-        <img src={movie.img || movie.poster_filename} alt="background blur" className="w-full h-full object-cover opacity-20 blur-3xl scale-110" />
+        <img src={`${import.meta.env.VITE_MEDIA_BASE || ""}${movie.img || '/' + movie.poster_filename}`} alt="background blur" className="w-full h-full object-cover opacity-20 blur-3xl scale-110" />
         <div className="absolute inset-0 bg-netflix-black/80"></div>
       </div>
     </div>
