@@ -40,7 +40,7 @@ app.get('/api/movies', (req, res) => {
       const processedReal = (realRows || []).map(r => ({
         ...r,
         id: r.uid, // 32-character string UUID
-        img: `/posters_real/${r.poster_filename}`,
+        img: r.poster_filename ? `/posters_real/${r.poster_filename}` : undefined,
         genres: JSON.parse(r.genres || '[]'),
         mood: JSON.parse(r.mood || '[]'),
         inspiration: getInspiration(r.uid)
@@ -54,7 +54,7 @@ app.get('/api/movies', (req, res) => {
               const processedFake = (fakeRows || []).map(r => ({
                   ...r,
                   id: r.uid, // 32-character string UUID
-                  img: `/posters_ai/poster_${r.id}.png?v=${Date.now()}`,
+                  img: r.id ? `/posters_ai/poster_${r.id}.png` : undefined,
                   genres: JSON.parse(r.genres || '[]'),
                   mood: JSON.parse(r.mood || '[]'),
                   inspiration: getInspiration(r.uid)
