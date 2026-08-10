@@ -164,10 +164,10 @@ function Navbar({ searchQuery, onSearchChange }) {
         <div className="flex items-center gap-4 md:gap-8">
           <Link to="/" className="text-netflix-red text-2xl md:text-3xl font-bold tracking-wider">HAMSTERFLIX</Link>
           <div className="hidden md:flex gap-4 text-sm font-medium text-netflix-light">
-            <Link to="/" className="font-bold text-white">Home</Link>
-            <span className="cursor-not-allowed opacity-50" title="TV Shows (Coming Soon)">TV Shows</span>
-            <span className="cursor-not-allowed opacity-50" title="Movies (Coming Soon)">Movies</span>
-            <span className="cursor-not-allowed opacity-50" title="New & Popular (Coming Soon)">New & Popular</span>
+            <Link to="/" className="font-bold text-white hover:text-gray-300 transition-colors">Home</Link>
+            <Link to="/tv-shows" className="font-bold text-white hover:text-gray-300 transition-colors">TV Shows</Link>
+            <Link to="/movies" className="font-bold text-white hover:text-gray-300 transition-colors">Movies</Link>
+            <Link to="/latest" className="font-bold text-white hover:text-gray-300 transition-colors">New & Popular</Link>
             <span className="cursor-not-allowed opacity-50" title="My List (Coming Soon)">My List</span>
           </div>
         </div>
@@ -317,7 +317,7 @@ function Row({ title, movies }) {
   );
 }
 
-function Home() {
+function Home({ filterType = 'all' }) {
     const [categories, setCategories] = React.useState([]);
     const [allMovies, setAllMovies] = React.useState([]);
     const [featured, setFeatured] = React.useState(FEATURED_MOVIE);
@@ -329,6 +329,16 @@ function Home() {
         .then(data => {
           if (data && data.length > 0) {
              setAllMovies(data);
+             
+             // Apply active filter
+             let filteredData = data;
+             if (filterType === 'tv') {
+               filteredData = data.filter(m => m.type === 'TV Show');
+             } else if (filterType === 'movies') {
+               filteredData = data.filter(m => m.type === 'Movie');
+             } else if (filterType === 'latest') {
+               filteredData = data.filter(m => m.is_new_popular === 1);
+             }
            
              const trending = [];
              const thrills = [];
@@ -337,7 +347,7 @@ function Home() {
              const action = [];
              const docs = [];
 
-             data.forEach((movie, i) => {
+             filteredData.forEach((movie, i) => {
                const genres = (movie.genres || '').toLowerCase();
                const mood = (movie.mood || '').toLowerCase();
                if (genres.includes("comedy") || mood.includes("funny") || mood.includes("silly")) {
@@ -370,18 +380,18 @@ function Home() {
              setCategories(chunked);
            
              // Set the first movie as the featured one
-             if (data.length > 0) {
+             if (filteredData.length > 0) {
                setFeatured({
-                 id: data[0].uid || data[0].id,
-                 title: data[0].title,
-                 description: data[0].synopsis,
-                 heroImage: data[0].img
+                 id: filteredData[0].uid || filteredData[0].id,
+                 title: filteredData[0].title,
+                 description: filteredData[0].synopsis,
+                 heroImage: filteredData[0].img
                });
              }
           }
         })
         .catch(e => console.error("Failed to fetch movies", e));
-    }, []);
+    }, [filterType]);
 
     const searchResults = React.useMemo(() => {
       if (!searchQuery.trim()) return [];
@@ -3608,7 +3618,10 @@ export default function App() {
     <Router>
       <div className="bg-netflix-black text-white min-h-screen font-sans overflow-x-hidden selection:bg-netflix-red selection:text-white">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home filterType="all" />} />
+          <Route path="/tv-shows" element={<Home filterType="tv" />} />
+          <Route path="/movies" element={<Home filterType="movies" />} />
+          <Route path="/latest" element={<Home filterType="latest" />} />
           <Route path="/movie/:id" element={<MovieDetail />} />
           <Route path="/voice/:id" element={<VoiceDetail />} />
         </Routes>
