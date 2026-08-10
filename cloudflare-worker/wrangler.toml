@@ -1,0 +1,11 @@
+name = "hamsterflix-media-gate"
+main = "src/index.js"
+compatibility_date = "2023-12-01"
+
+routes = [
+  { pattern = "media.neuralon.ai/*", zone_id = "7c854cb1c5ac0b5a7039738d7a866060" }
+]
+
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "hamsterflix-media"

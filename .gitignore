@@ -20,3 +20,4 @@ frontend/public/trailers/
 frontend/public/voiceovers/
 frontend/public/trailer_scripts.json
 *.log
+cloudflare-worker/node_modules/
