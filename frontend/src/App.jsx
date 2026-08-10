@@ -333,7 +333,7 @@ function Home() {
                  scifi.push(movie);
                } else if (genres.includes("thriller") || genres.includes("horror") || mood.includes("intense")) {
                  thrills.push(movie);
-               } else if (genres.includes("documentary") || genres.includes("family")) {
+               } else if (genres.includes("documentary") || genres.includes("family") || genres.includes("drama") || genres.includes("romance") || genres.includes("animation") || mood.includes("heartwarming")) {
                  docs.push(movie);
                } else if (genres.includes("action") || genres.includes("adventure") || mood.includes("fast-paced")) {
                  action.push(movie);
