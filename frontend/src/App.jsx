@@ -1,6 +1,33 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useParams, useNavigate, useLocation } from 'react-router-dom';
-import { Search, Bell, Info, Play, ChevronDown, Plus, ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Bell, Info, Play, ChevronDown, Plus, ArrowLeft, ChevronLeft, ChevronRight, Check } from 'lucide-react';
+
+const useMyList = () => {
+  const [myList, setMyList] = React.useState(() => {
+    const saved = localStorage.getItem('hamsterflix_mylist');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const toggleMyList = (id) => {
+    const newList = myList.includes(id) 
+      ? myList.filter(x => x !== id)
+      : [...myList, id];
+    setMyList(newList);
+    localStorage.setItem('hamsterflix_mylist', JSON.stringify(newList));
+    window.dispatchEvent(new Event('mylist_updated'));
+  };
+
+  React.useEffect(() => {
+    const sync = () => {
+      const saved = localStorage.getItem('hamsterflix_mylist');
+      setMyList(saved ? JSON.parse(saved) : []);
+    };
+    window.addEventListener('mylist_updated', sync);
+    return () => window.removeEventListener('mylist_updated', sync);
+  }, []);
+
+  return { myList, toggleMyList };
+};
 
 const FEATURED_MOVIE = {
   id: "1cda3e6346d04a4d97c30ebbc09481be",
@@ -168,7 +195,7 @@ function Navbar({ searchQuery, onSearchChange }) {
             <Link to="/tv-shows" className="font-bold text-white hover:text-gray-300 transition-colors">TV Shows</Link>
             <Link to="/movies" className="font-bold text-white hover:text-gray-300 transition-colors">Movies</Link>
             <Link to="/latest" className="font-bold text-white hover:text-gray-300 transition-colors">New & Popular</Link>
-            <span className="cursor-not-allowed opacity-50" title="My List (Coming Soon)">My List</span>
+            <Link to="/my-list" className="font-bold text-white hover:text-gray-300 transition-colors">My List</Link>
           </div>
         </div>
         <div className="flex items-center gap-6 text-white">
@@ -220,7 +247,9 @@ function Navbar({ searchQuery, onSearchChange }) {
 
 function Hero({ featured }) {
   const navigate = useNavigate();
+  const { myList, toggleMyList } = useMyList();
   const heroMovie = featured || FEATURED_MOVIE;
+  const isSaved = myList.includes(heroMovie.id);
   
   const handlePlay = () => {
     if (heroMovie.id) {
@@ -256,6 +285,12 @@ function Hero({ featured }) {
             </button>
             <button onClick={handleMoreInfo} className="flex items-center gap-2 bg-gray-500/70 text-white px-6 md:px-8 py-2 md:py-3 rounded hover:bg-gray-500/50 transition-colors font-bold text-lg backdrop-blur-sm">
               <Info className="w-6 h-6" /> More Info
+            </button>
+            <button 
+              onClick={() => toggleMyList(heroMovie.id)} 
+              className="hidden md:flex items-center gap-2 bg-gray-800/70 text-white px-6 md:px-8 py-2 md:py-3 rounded hover:bg-gray-600/50 transition-colors font-bold text-lg backdrop-blur-sm"
+            >
+              {isSaved ? <Check className="w-6 h-6" /> : <Plus className="w-6 h-6" />} My List
             </button>
           </div>
         </div>
@@ -338,6 +373,9 @@ function Home({ filterType = 'all' }) {
                filteredData = data.filter(m => m.type === 'Movie');
              } else if (filterType === 'latest') {
                filteredData = data.filter(m => m.is_new_popular === 1);
+             } else if (filterType === 'mylist') {
+               const savedList = JSON.parse(localStorage.getItem('hamsterflix_mylist') || '[]');
+               filteredData = data.filter(m => savedList.includes(m.uid || m.id));
              }
            
              const trending = [];
@@ -417,6 +455,8 @@ function Home({ filterType = 'all' }) {
       });
     }, [searchQuery, allMovies]);
 
+    const { myList, toggleMyList } = useMyList();
+
     return (
       <>
         <Navbar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
@@ -434,7 +474,17 @@ function Home({ filterType = 'all' }) {
                       <div className="text-white font-bold text-sm md:text-md leading-tight mb-1">{movie.title}</div>
                       <div className="flex items-center gap-2 mt-2">
                         <Play className="w-6 h-6 fill-white" />
-                        <Plus className="w-6 h-6 border-2 border-gray-400 rounded-full p-1 hover:border-white" />
+                        <button onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          toggleMyList(movie.uid || movie.id);
+                        }} className="border-2 border-gray-400 rounded-full p-1 hover:border-white transition-colors cursor-pointer z-50">
+                          {myList.includes(movie.uid || movie.id) ? (
+                            <Check className="w-4 h-4" />
+                          ) : (
+                            <Plus className="w-4 h-4" />
+                          )}
+                        </button>
                       </div>
                     </div>
                   </Link>
@@ -3411,6 +3461,7 @@ function MovieDetail() {
       const { id } = useParams();
       const navigate = useNavigate();
       const location = useLocation();
+      const { myList, toggleMyList } = useMyList();
       const [extractedData, setExtractedData] = React.useState(null);
       const [isPlaying, setIsPlaying] = React.useState(false);
 
@@ -3551,8 +3602,11 @@ function MovieDetail() {
                       <button onClick={() => setIsPlaying(true)} className="flex items-center justify-center gap-2 bg-white text-black px-8 py-3 rounded hover:bg-white/80 transition-colors font-bold text-lg md:text-xl min-w-[140px]">
                          <Play className="w-6 h-6 fill-current" /> Play
                       </button>
-                      <button className="flex items-center justify-center gap-2 bg-gray-600/70 text-white px-8 py-3 rounded hover:bg-gray-600/50 transition-colors font-bold text-lg md:text-xl backdrop-blur-sm min-w-[140px]" title="My List (Coming Soon)">
-                         <Plus className="w-6 h-6" /> My List
+                      <button 
+                        onClick={() => toggleMyList(details.uid || details.id)} 
+                        className="flex items-center justify-center gap-2 bg-gray-600/70 text-white px-8 py-3 rounded hover:bg-gray-600/50 transition-colors font-bold text-lg md:text-xl backdrop-blur-sm min-w-[140px]"
+                      >
+                         {myList.includes(details.uid || details.id) ? <Check className="w-6 h-6" /> : <Plus className="w-6 h-6" />} My List
                       </button>
                     </div>
                   </div>
@@ -3622,6 +3676,7 @@ export default function App() {
           <Route path="/tv-shows" element={<Home filterType="tv" />} />
           <Route path="/movies" element={<Home filterType="movies" />} />
           <Route path="/latest" element={<Home filterType="latest" />} />
+          <Route path="/my-list" element={<Home filterType="mylist" />} />
           <Route path="/movie/:id" element={<MovieDetail />} />
           <Route path="/voice/:id" element={<VoiceDetail />} />
         </Routes>
