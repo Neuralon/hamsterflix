@@ -17,10 +17,22 @@ Disallow: /
 User-agent: Claude-Web
 Disallow: /
 
+User-agent: ClaudeBot
+Disallow: /
+
 User-agent: Anthropic-ai
 Disallow: /
 
 User-agent: CCBot
+Disallow: /
+
+User-agent: Omgili
+Disallow: /
+
+User-agent: Omgilibot
+Disallow: /
+
+User-agent: facebookexternalhit
 Disallow: /
 
 User-agent: Applebot
