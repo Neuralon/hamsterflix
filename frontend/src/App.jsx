@@ -33,7 +33,7 @@ const FEATURED_MOVIE = {
   id: "1cda3e6346d04a4d97c30ebbc09481be",
   title: "Hamster's Great Escape",
   description: "When the wheel stops turning, the real adventure begins. Follow one brave hamster's journey beyond the cage.",
-  heroImage: "/posters/poster_1.png"
+  heroImage: "/posters_real/poster_real_1.png"
 };
 
 // const CATEGORIES = [
@@ -335,7 +335,7 @@ function Row({ title, movies }) {
         >
           {movies.map((movie, idx) => (
             <Link key={`${movie.uid || movie.id}-${idx}`} to={`/movie/${movie.uid || movie.id}`} className="relative flex-none w-[140px] md:w-[200px] h-[210px] md:h-[300px] transition-all duration-300 hover:scale-110 hover:z-20 origin-center cursor-pointer rounded-md overflow-hidden shadow-lg border border-transparent hover:border-gray-500">
-              <img src={`${import.meta.env.VITE_MEDIA_BASE || ""}${movie.img || (movie.poster_filename ? '/posters_real/' + movie.poster_filename : '/posters_real/poster_real_1.png')}`} alt={movie.title} className="w-full h-full object-cover" />
+              <img src={`${import.meta.env.VITE_MEDIA_BASE || ""}${movie.poster_filename ? '/posters_real/' + movie.poster_filename : '/posters_real/poster_real_1.png'}`} alt={movie.title} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
                 <p className="text-white font-bold text-sm md:text-base drop-shadow-md text-center">{movie.title}</p>
               </div>
@@ -428,7 +428,7 @@ function Home({ filterType = 'all' }) {
                  id: filteredData[0].uid || filteredData[0].id,
                  title: filteredData[0].title,
                  description: filteredData[0].synopsis,
-                 heroImage: filteredData[0].img
+                 heroImage: filteredData[0].poster_filename ? '/posters_real/' + filteredData[0].poster_filename : '/posters_real/poster_real_1.png'
                });
              }
           }
@@ -474,7 +474,7 @@ function Home({ filterType = 'all' }) {
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-10">
                 {searchResults.map((movie, idx) => (
                   <Link key={idx} to={`/browse/${movie.uid}`} className="group relative aspect-[2/3] bg-gray-900 rounded-md overflow-hidden cursor-pointer">
-                    <img src={`${import.meta.env.VITE_MEDIA_BASE || ""}${movie.img || (movie.poster_filename ? '/posters_real/' + movie.poster_filename : '/posters_real/poster_real_1.png')}`} alt={movie.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                    <img src={`${import.meta.env.VITE_MEDIA_BASE || ""}${movie.poster_filename ? '/posters_real/' + movie.poster_filename : '/posters_real/poster_real_1.png'}`} alt={movie.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
                       <div className="text-white font-bold text-sm md:text-md leading-tight mb-1">{movie.title}</div>
                       <div className="flex items-center gap-2 mt-2">
@@ -3489,7 +3489,7 @@ function MovieDetail() {
       if (!extractedData) return <div className="text-white pt-32 text-center text-2xl font-bold">Loading...</div>;
 
       const details = extractedData;
-      const movieImg = details.img || (details.poster_filename ? '/posters_real/' + details.poster_filename : '/posters_real/poster_real_1.png');
+      const movieImg = details.poster_filename ? '/posters_real/' + details.poster_filename : '/posters_real/poster_real_1.png';
       const absoluteMovieImg = `${import.meta.env.VITE_MEDIA_BASE || ""}${movieImg}`;
 
       return (
@@ -3647,7 +3647,7 @@ function VoiceDetail() {
            <ArrowLeft className="w-5 h-5" /> Back
         </button>
         <div className="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden border-4 border-netflix-red shadow-[0_0_20px_rgba(229,9,20,0.5)]">
-           <img src={`${import.meta.env.VITE_MEDIA_BASE || ""}${movie.img || (movie.poster_filename ? '/posters_real/' + movie.poster_filename : '/posters_real/poster_real_1.png')}`} alt={movie.title} className="w-full h-full object-cover" />
+           <img src={`${import.meta.env.VITE_MEDIA_BASE || ""}${movie.poster_filename ? '/posters_real/' + movie.poster_filename : '/posters_real/poster_real_1.png'}`} alt={movie.title} className="w-full h-full object-cover" />
         </div>
         <h1 className="text-3xl font-bold mb-2">{movie.title}</h1>
         <p className="text-gray-400 mb-8 font-medium">Original Voiceover Generation</p>
@@ -3666,7 +3666,7 @@ function VoiceDetail() {
       
       {/* Background Blur */}
       <div className="fixed inset-0 z-0 pointer-events-none">
-        <img src={`${import.meta.env.VITE_MEDIA_BASE || ""}${movie.img || (movie.poster_filename ? '/posters_real/' + movie.poster_filename : '/posters_real/poster_real_1.png')}`} alt="background blur" className="w-full h-full object-cover opacity-20 blur-3xl scale-110" />
+        <img src={`${import.meta.env.VITE_MEDIA_BASE || ""}${movie.poster_filename ? '/posters_real/' + movie.poster_filename : '/posters_real/poster_real_1.png'}`} alt="background blur" className="w-full h-full object-cover opacity-20 blur-3xl scale-110" />
         <div className="absolute inset-0 bg-netflix-black/80"></div>
       </div>
     </div>
