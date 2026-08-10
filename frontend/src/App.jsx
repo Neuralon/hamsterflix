@@ -150,17 +150,36 @@ function Navbar() {
           <Link to="/" className="text-netflix-red text-2xl md:text-3xl font-bold tracking-wider">HAMSTERFLIX</Link>
           <div className="hidden md:flex gap-4 text-sm font-medium text-netflix-light">
             <Link to="/" className="font-bold text-white">Home</Link>
+            <span className="cursor-not-allowed opacity-50" title="TV Shows (Coming Soon)">TV Shows</span>
+            <span className="cursor-not-allowed opacity-50" title="Movies (Coming Soon)">Movies</span>
+            <span className="cursor-not-allowed opacity-50" title="New & Popular (Coming Soon)">New & Popular</span>
+            <span className="cursor-not-allowed opacity-50" title="My List (Coming Soon)">My List</span>
             <Link to="/scripts" className="hover:text-white transition-colors">Trailer Scripts</Link>
             <Link to="/report" className="hover:text-white transition-colors">Completion Report</Link>
           </div>
         </div>
         <div className="flex items-center gap-6 text-white">
-          <Search className="w-5 h-5 cursor-pointer" />
+          <Search className="w-5 h-5 cursor-pointer opacity-50 hover:opacity-100 transition-opacity" title="Search (Coming Soon)" />
           <span className="hidden md:block text-sm">Kids</span>
-          <Bell className="w-5 h-5 cursor-pointer" />
-          <div className="flex items-center gap-2 cursor-pointer group">
+          <Bell className="w-5 h-5 cursor-pointer opacity-50 hover:opacity-100 transition-opacity" title="Notifications (Coming Soon)" />
+          <div className="flex items-center gap-2 cursor-pointer group relative">
             <div className="w-8 h-8 bg-blue-500 rounded text-xs flex items-center justify-center font-bold">H</div>
             <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform" />
+            
+            {/* Dropdown Menu */}
+            <div className="absolute top-full right-0 mt-4 w-48 bg-black/90 border border-gray-800 rounded shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+              <div className="py-2">
+                <button 
+                  onClick={() => {
+                    localStorage.removeItem('hamsterflix_auth');
+                    window.location.reload();
+                  }}
+                  className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-800 transition-colors"
+                >
+                  Sign out of Hamsterflix
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -3418,7 +3437,7 @@ function MovieDetail() {
                       <button onClick={() => setIsPlaying(true)} className="flex items-center justify-center gap-2 bg-white text-black px-8 py-3 rounded hover:bg-white/80 transition-colors font-bold text-lg md:text-xl min-w-[140px]">
                          <Play className="w-6 h-6 fill-current" /> Play
                       </button>
-                      <button className="flex items-center justify-center gap-2 bg-gray-600/70 text-white px-8 py-3 rounded hover:bg-gray-600/50 transition-colors font-bold text-lg md:text-xl backdrop-blur-sm min-w-[140px]">
+                      <button className="flex items-center justify-center gap-2 bg-gray-600/70 text-white px-8 py-3 rounded hover:bg-gray-600/50 transition-colors font-bold text-lg md:text-xl backdrop-blur-sm min-w-[140px]" title="My List (Coming Soon)">
                          <Plus className="w-6 h-6" /> My List
                       </button>
                     </div>
