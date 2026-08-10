@@ -302,20 +302,63 @@ function Hero({ featured }) {
 
 function Row({ title, movies }) {
   const rowRef = React.useRef(null);
+  const [items, setItems] = React.useState(movies);
+
+  React.useEffect(() => {
+    setItems(movies);
+  }, [movies]);
 
   const handleScroll = (direction) => {
     if (rowRef.current) {
-      const { scrollLeft, clientWidth, scrollWidth } = rowRef.current;
-      const maxScroll = scrollWidth - clientWidth;
+      const { scrollLeft, clientWidth } = rowRef.current;
       
-      let scrollTo;
+      const firstChild = rowRef.current.children[0];
+      const itemWidth = firstChild ? firstChild.offsetWidth + 16 : 0; // 16px is gap-4
+      const numItemsToMove = Math.max(1, Math.floor(clientWidth / itemWidth));
+
       if (direction === 'left') {
-        scrollTo = scrollLeft <= 0 ? maxScroll : scrollLeft - clientWidth;
+        if (scrollLeft <= 0) {
+          // Pre-pend items and adjust scroll instantly, then smooth scroll
+          setItems(prev => {
+            const next = [...prev];
+            const moved = next.splice(-numItemsToMove);
+            next.unshift(...moved);
+            return next;
+          });
+          
+          // Wait for render
+          requestAnimationFrame(() => {
+            if (rowRef.current) {
+              rowRef.current.scrollLeft += (itemWidth * numItemsToMove);
+              // Now smooth scroll
+              rowRef.current.scrollTo({ left: rowRef.current.scrollLeft - clientWidth, behavior: 'smooth' });
+            }
+          });
+        } else {
+          const scrollTo = scrollLeft - clientWidth;
+          rowRef.current.scrollTo({ left: scrollTo < 0 ? 0 : scrollTo, behavior: 'smooth' });
+        }
       } else {
-        scrollTo = scrollLeft >= maxScroll - 5 ? 0 : scrollLeft + clientWidth;
+        const scrollTo = scrollLeft + clientWidth;
+        rowRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' });
+        
+        setTimeout(() => {
+          if (rowRef.current) {
+            setItems(prev => {
+              const next = [...prev];
+              const moved = next.splice(0, numItemsToMove);
+              next.push(...moved);
+              return next;
+            });
+            
+            requestAnimationFrame(() => {
+              if (rowRef.current) {
+                rowRef.current.scrollLeft -= (itemWidth * numItemsToMove);
+              }
+            });
+          }
+        }, 500); // wait for smooth scroll to finish
       }
-      
-      rowRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' });
     }
   };
 
@@ -333,8 +376,8 @@ function Row({ title, movies }) {
           ref={rowRef} 
           className="flex gap-4 overflow-x-auto hide-scrollbar pb-8 pt-4 -mt-4 px-2 -mx-2"
         >
-          {movies.map((movie, idx) => (
-            <Link key={`${movie.uid || movie.id}-${idx}`} to={`/movie/${movie.uid || movie.id}`} className="relative flex-none w-[140px] md:w-[200px] h-[210px] md:h-[300px] transition-all duration-300 hover:scale-110 hover:z-20 origin-center cursor-pointer rounded-md overflow-hidden shadow-lg border border-transparent hover:border-gray-500">
+          {items.map((movie, idx) => (
+            <Link key={`${movie.uid || movie.id}-${idx}-${movie.title}`} to={`/movie/${movie.uid || movie.id}`} className="relative flex-none w-[140px] md:w-[200px] h-[210px] md:h-[300px] transition-all duration-300 hover:scale-110 hover:z-20 origin-center cursor-pointer rounded-md overflow-hidden shadow-lg border border-transparent hover:border-gray-500">
               <img src={`${import.meta.env.VITE_MEDIA_BASE || ""}${movie.img || (movie.poster_filename ? '/posters_real/' + movie.poster_filename : '/posters_real/poster_real_1.png')}`} alt={movie.title} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
                 <p className="text-white font-bold text-sm md:text-base drop-shadow-md text-center">{movie.title}</p>
@@ -387,8 +430,8 @@ function Home({ filterType = 'all' }) {
              const docs = [];
 
              filteredData.forEach((movie, i) => {
-               const genres = (movie.genres || '').toLowerCase();
-               const mood = (movie.mood || '').toLowerCase();
+               const genres = (Array.isArray(movie.genres) ? movie.genres.join(' ') : (movie.genres || '')).toLowerCase();
+               const mood = (Array.isArray(movie.mood) ? movie.mood.join(' ') : (movie.mood || '')).toLowerCase();
                const title = (movie.title || '').toLowerCase();
                const synopsis = (movie.synopsis || '').toLowerCase();
                const tags = genres + ' ' + mood + ' ' + title + ' ' + synopsis;
@@ -442,7 +485,7 @@ function Home({ filterType = 'all' }) {
       return allMovies.filter(m => {
         const titleMatch = m.title && m.title.toLowerCase().includes(lowerQuery);
         const synMatch = m.synopsis && m.synopsis.toLowerCase().includes(lowerQuery);
-        const genreMatch = m.genres && m.genres.toLowerCase().includes(lowerQuery);
+        const genreMatch = m.genres && (Array.isArray(m.genres) ? m.genres.join(' ') : m.genres).toLowerCase().includes(lowerQuery);
         
         let castMatch = false;
         if (m.cast && typeof m.cast === 'string') {
