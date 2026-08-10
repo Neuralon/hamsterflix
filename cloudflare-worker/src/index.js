@@ -3,13 +3,16 @@ export default {
     const url = new URL(request.url);
     const referer = request.headers.get('Referer') || request.headers.get('Origin') || '';
     
+    const origin = request.headers.get('Origin') || 'https://hamsterflix.neuralon.ai';
+    const allowedOrigin = origin.includes('localhost') ? origin : 'https://hamsterflix.neuralon.ai';
+    
     // Allow options requests for CORS
     if (request.method === 'OPTIONS') {
       return new Response(null, {
         headers: {
-          'Access-Control-Allow-Origin': 'https://hamsterflix.neuralon.ai',
+          'Access-Control-Allow-Origin': allowedOrigin,
           'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS',
-          'Access-Control-Allow-Headers': 'Range',
+          'Access-Control-Allow-Headers': 'Range, Origin, Accept, Content-Type',
           'Access-Control-Max-Age': '86400',
         }
       });
@@ -47,7 +50,7 @@ export default {
     const headers = new Headers();
     object.writeHttpMetadata(headers);
     headers.set('etag', object.httpEtag);
-    headers.set('Access-Control-Allow-Origin', 'https://hamsterflix.neuralon.ai');
+    headers.set('Access-Control-Allow-Origin', allowedOrigin);
     
     // EXTREME CACHING: Force browsers and the Cloudflare Edge network to cache media heavily for 30 days
     headers.set('Cache-Control', 'public, max-age=2592000, immutable');
