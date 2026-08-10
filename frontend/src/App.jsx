@@ -303,6 +303,20 @@ function Hero({ featured }) {
 function Row({ title, movies }) {
   const rowRef = React.useRef(null);
   const [items, setItems] = React.useState(movies);
+  const [showArrows, setShowArrows] = React.useState(false);
+
+  React.useEffect(() => {
+    if (rowRef.current) {
+      setShowArrows(rowRef.current.scrollWidth > rowRef.current.clientWidth);
+    }
+    const handleResize = () => {
+      if (rowRef.current) {
+        setShowArrows(rowRef.current.scrollWidth > rowRef.current.clientWidth);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [items]);
 
   React.useEffect(() => {
     setItems(movies);
@@ -314,7 +328,7 @@ function Row({ title, movies }) {
       
       const firstChild = rowRef.current.children[0];
       const itemWidth = firstChild ? firstChild.offsetWidth + 16 : 0; // 16px is gap-4
-      const numItemsToMove = Math.max(1, Math.floor(clientWidth / itemWidth));
+      const numItemsToMove = Math.max(1, Math.min(items.length - 1, Math.floor(clientWidth / itemWidth)));
 
       if (direction === 'left') {
         if (scrollLeft <= 0) {
@@ -366,12 +380,14 @@ function Row({ title, movies }) {
     <div className="px-4 md:px-12 py-4 relative group z-10">
       <h2 className="text-white text-xl md:text-2xl font-bold mb-4">{title}</h2>
       <div className="relative">
+        {showArrows && (
         <button 
           onClick={() => handleScroll('left')}
           className="absolute left-0 top-0 bottom-8 w-12 bg-black/50 hover:bg-black/70 z-30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all rounded-l-md"
         >
           <ChevronLeft className="w-8 h-8 text-white transition-transform hover:scale-125" />
         </button>
+        )}
         <div 
           ref={rowRef} 
           className="flex gap-4 overflow-x-auto hide-scrollbar pb-8 pt-4 -mt-4 px-2 -mx-2"
@@ -385,12 +401,14 @@ function Row({ title, movies }) {
             </Link>
           ))}
         </div>
+        {showArrows && (
         <button 
           onClick={() => handleScroll('right')}
           className="absolute right-0 top-0 bottom-8 w-12 bg-black/50 hover:bg-black/70 z-30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all rounded-r-md"
         >
           <ChevronRight className="w-8 h-8 text-white transition-transform hover:scale-125" />
         </button>
+        )}
       </div>
     </div>
   );
