@@ -3,8 +3,14 @@ export default {
     const url = new URL(request.url);
     const referer = request.headers.get('Referer') || request.headers.get('Origin') || '';
     
+    // Default to the production domain, but allow localhost and the Pages *.hamsterflix.pages.dev preview URLs to pass through 
     const origin = request.headers.get('Origin') || 'https://hamsterflix.neuralon.ai';
-    const allowedOrigin = origin.includes('localhost') ? origin : 'https://hamsterflix.neuralon.ai';
+    let allowedOrigin = 'https://hamsterflix.neuralon.ai';
+    if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+      allowedOrigin = origin;
+    } else if (origin.includes('.hamsterflix.pages.dev')) {
+      allowedOrigin = origin;
+    }
     
     // Allow options requests for CORS
     if (request.method === 'OPTIONS') {
@@ -18,8 +24,11 @@ export default {
       });
     }
 
-    // Must be coming from the hamsterflix frontend or local dev
-    if (!referer.includes('hamsterflix.neuralon.ai') && !referer.includes('localhost') && !referer.includes('127.0.0.1')) {
+    // Must be coming from the hamsterflix frontend, local dev, or the Pages preview domains
+    if (!referer.includes('hamsterflix.neuralon.ai') && 
+        !referer.includes('localhost') && 
+        !referer.includes('127.0.0.1') && 
+        !referer.includes('.hamsterflix.pages.dev')) {
       return new Response('Unauthorized Access: Hotlinking blocked. Access restricted to Hamsterflix.', { status: 403 });
     }
 
