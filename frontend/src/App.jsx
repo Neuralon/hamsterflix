@@ -251,19 +251,20 @@ function Hero({ featured }) {
 
 function Row({ title, movies }) {
   const rowRef = React.useRef(null);
-  const [showLeftArrow, setShowLeftArrow] = React.useState(false);
 
   const handleScroll = (direction) => {
     if (rowRef.current) {
-      const { scrollLeft, clientWidth } = rowRef.current;
-      const scrollTo = direction === 'left' ? scrollLeft - clientWidth : scrollLeft + clientWidth;
+      const { scrollLeft, clientWidth, scrollWidth } = rowRef.current;
+      const maxScroll = scrollWidth - clientWidth;
+      
+      let scrollTo;
+      if (direction === 'left') {
+        scrollTo = scrollLeft <= 0 ? maxScroll : scrollLeft - clientWidth;
+      } else {
+        scrollTo = scrollLeft >= maxScroll - 5 ? 0 : scrollLeft + clientWidth;
+      }
+      
       rowRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' });
-    }
-  };
-
-  const handleScrollEvent = () => {
-    if (rowRef.current) {
-      setShowLeftArrow(rowRef.current.scrollLeft > 0);
     }
   };
 
@@ -271,21 +272,18 @@ function Row({ title, movies }) {
     <div className="px-4 md:px-12 py-4 relative group z-10">
       <h2 className="text-white text-xl md:text-2xl font-bold mb-4">{title}</h2>
       <div className="relative">
-        {showLeftArrow && (
-          <button 
-            onClick={() => handleScroll('left')}
-            className="absolute left-0 top-0 bottom-8 w-12 bg-black/50 hover:bg-black/70 z-30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all rounded-l-md"
-          >
-            <ChevronLeft className="w-8 h-8 text-white transition-transform hover:scale-125" />
-          </button>
-        )}
+        <button 
+          onClick={() => handleScroll('left')}
+          className="absolute left-0 top-0 bottom-8 w-12 bg-black/50 hover:bg-black/70 z-30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all rounded-l-md"
+        >
+          <ChevronLeft className="w-8 h-8 text-white transition-transform hover:scale-125" />
+        </button>
         <div 
           ref={rowRef} 
-          onScroll={handleScrollEvent}
           className="flex gap-4 overflow-x-auto hide-scrollbar pb-8 pt-4 -mt-4 px-2 -mx-2"
         >
-          {movies.map(movie => (
-            <Link key={movie.id} to={`/movie/${movie.id}`} className="relative flex-none w-[140px] md:w-[200px] h-[210px] md:h-[300px] transition-all duration-300 hover:scale-110 hover:z-20 origin-center cursor-pointer rounded-md overflow-hidden shadow-lg border border-transparent hover:border-gray-500">
+          {movies.map((movie, idx) => (
+            <Link key={`${movie.uid || movie.id}-${idx}`} to={`/movie/${movie.uid || movie.id}`} className="relative flex-none w-[140px] md:w-[200px] h-[210px] md:h-[300px] transition-all duration-300 hover:scale-110 hover:z-20 origin-center cursor-pointer rounded-md overflow-hidden shadow-lg border border-transparent hover:border-gray-500">
               <img src={movie.img || movie.poster_filename || '/posters_real/poster_real_1.png'} alt={movie.title} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
                 <p className="text-white font-bold text-sm md:text-base drop-shadow-md text-center">{movie.title}</p>
