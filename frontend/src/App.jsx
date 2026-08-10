@@ -388,15 +388,19 @@ function Home({ filterType = 'all' }) {
              filteredData.forEach((movie, i) => {
                const genres = (movie.genres || '').toLowerCase();
                const mood = (movie.mood || '').toLowerCase();
-               if (genres.includes("comedy") || mood.includes("funny") || mood.includes("silly")) {
+               const title = (movie.title || '').toLowerCase();
+               const synopsis = (movie.synopsis || '').toLowerCase();
+               const tags = genres + ' ' + mood + ' ' + title + ' ' + synopsis;
+
+               if (tags.includes("comedy") || tags.includes("funny") || tags.includes("silly") || tags.includes("humorous") || tags.includes("amusing")) {
                  comedies.push(movie);
-               } else if (genres.includes("sci-fi") || genres.includes("fantasy")) {
+               } else if (tags.includes("sci-fi") || tags.includes("fantasy") || tags.includes("space") || tags.includes("alien")) {
                  scifi.push(movie);
-               } else if (genres.includes("thriller") || genres.includes("horror") || mood.includes("intense")) {
+               } else if (tags.includes("thriller") || tags.includes("horror") || tags.includes("intense") || tags.includes("mystery") || tags.includes("suspense")) {
                  thrills.push(movie);
-               } else if (genres.includes("documentary") || genres.includes("family") || genres.includes("drama") || genres.includes("romance") || genres.includes("animation") || mood.includes("heartwarming")) {
+               } else if (tags.includes("documentary") || tags.includes("family") || tags.includes("drama") || tags.includes("romance") || tags.includes("animation") || tags.includes("heartwarming") || tags.includes("cute") || tags.includes("love")) {
                  docs.push(movie);
-               } else if (genres.includes("action") || genres.includes("adventure") || mood.includes("fast-paced")) {
+               } else if (tags.includes("action") || tags.includes("adventure") || tags.includes("fast-paced") || tags.includes("epic") || tags.includes("hero")) {
                  action.push(movie);
                } else {
                  trending.push(movie); // catch-all
