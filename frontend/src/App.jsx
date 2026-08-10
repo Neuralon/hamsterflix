@@ -1,8 +1,9 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useParams, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Search, Bell, Info, Play, ChevronDown, Plus, ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const FEATURED_MOVIE = {
+  id: "1cda3e6346d04a4d97c30ebbc09481be",
   title: "Hamster's Great Escape",
   description: "When the wheel stops turning, the real adventure begins. Follow one brave hamster's journey beyond the cage.",
   heroImage: "/posters/poster_1.png"
@@ -218,7 +219,21 @@ function Navbar({ searchQuery, onSearchChange }) {
 }
 
 function Hero({ featured }) {
+  const navigate = useNavigate();
   const heroMovie = featured || FEATURED_MOVIE;
+  
+  const handlePlay = () => {
+    if (heroMovie.id) {
+      navigate(`/movie/${heroMovie.id}?play=true`);
+    }
+  };
+
+  const handleMoreInfo = () => {
+    if (heroMovie.id) {
+      navigate(`/movie/${heroMovie.id}`);
+    }
+  };
+
   return (
     <div className="relative h-[80vh] w-full">
       <div className="absolute inset-0">
@@ -236,10 +251,10 @@ function Hero({ featured }) {
             {heroMovie.description}
           </p>
           <div className="flex gap-4">
-            <button className="flex items-center gap-2 bg-white text-black px-6 md:px-8 py-2 md:py-3 rounded hover:bg-white/80 transition-colors font-bold text-lg">
+            <button onClick={handlePlay} className="flex items-center gap-2 bg-white text-black px-6 md:px-8 py-2 md:py-3 rounded hover:bg-white/80 transition-colors font-bold text-lg">
               <Play className="w-6 h-6 fill-current" /> Play
             </button>
-            <button className="flex items-center gap-2 bg-gray-500/70 text-white px-6 md:px-8 py-2 md:py-3 rounded hover:bg-gray-500/50 transition-colors font-bold text-lg backdrop-blur-sm">
+            <button onClick={handleMoreInfo} className="flex items-center gap-2 bg-gray-500/70 text-white px-6 md:px-8 py-2 md:py-3 rounded hover:bg-gray-500/50 transition-colors font-bold text-lg backdrop-blur-sm">
               <Info className="w-6 h-6" /> More Info
             </button>
           </div>
@@ -357,6 +372,7 @@ function Home() {
              // Set the first movie as the featured one
              if (data.length > 0) {
                setFeatured({
+                 id: data[0].uid || data[0].id,
                  title: data[0].title,
                  description: data[0].synopsis,
                  heroImage: data[0].img
@@ -3384,12 +3400,16 @@ const EXTRACTED_DATA = {
 function MovieDetail() {
       const { id } = useParams();
       const navigate = useNavigate();
+      const location = useLocation();
       const [extractedData, setExtractedData] = React.useState(null);
       const [isPlaying, setIsPlaying] = React.useState(false);
 
       React.useEffect(() => {
         window.scrollTo(0, 0);
-        setIsPlaying(false);
+        
+        // Check if play was requested from the URL
+        const params = new URLSearchParams(location.search);
+        setIsPlaying(params.get('play') === 'true');
     
         // Simulate fetching from our new SQLite DB via an API
         fetch('/api/movies/' + id)
@@ -3398,7 +3418,7 @@ function MovieDetail() {
           .catch(() => {
             setExtractedData(EXTRACTED_DATA.default);
           });
-      }, [id]);
+      }, [id, location.search]);
 
       if (!extractedData) return <div className="text-white pt-32 text-center text-2xl font-bold">Loading...</div>;
 
