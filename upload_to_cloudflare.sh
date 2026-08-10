@@ -18,4 +18,7 @@ aws s3 sync frontend/public/posters s3://$BUCKET/posters --endpoint-url https://
 aws s3 sync frontend/public/posters_real s3://$BUCKET/posters_real --endpoint-url https://$ACCOUNT_ID.r2.cloudflarestorage.com --profile r2
 aws s3 sync frontend/public/posters_ai s3://$BUCKET/posters_ai --endpoint-url https://$ACCOUNT_ID.r2.cloudflarestorage.com --profile r2
 
+echo "Syncing actors to R2..."
+aws s3 sync frontend/public/actors s3://$BUCKET/actors --endpoint-url https://$ACCOUNT_ID.r2.cloudflarestorage.com --profile r2
+
 echo "Upload Complete!"
