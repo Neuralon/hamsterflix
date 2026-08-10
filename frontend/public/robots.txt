@@ -1,0 +1,33 @@
+# Block all search engines, scrapers, and AI crawlers
+User-agent: *
+Disallow: /
+
+User-agent: Googlebot
+Disallow: /
+
+User-agent: Bingbot
+Disallow: /
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+User-agent: Anthropic-ai
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: Applebot
+Disallow: /
+
+User-agent: Twitterbot
+Disallow: /
+
+User-agent: Slackbot
+Disallow: /
