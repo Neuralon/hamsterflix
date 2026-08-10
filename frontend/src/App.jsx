@@ -132,8 +132,10 @@ const FEATURED_MOVIE = {
 
 // const ALL_MOVIES = CATEGORIES.flatMap(c => c.movies);
 
-function Navbar() {
+function Navbar({ searchQuery, onSearchChange }) {
   const [isScrolled, setIsScrolled] = React.useState(false);
+  const [isSearchExpanded, setIsSearchExpanded] = React.useState(false);
+  const searchInputRef = React.useRef(null);
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -142,6 +144,18 @@ function Navbar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleSearchClick = () => {
+    if (!onSearchChange) return;
+    setIsSearchExpanded(true);
+    setTimeout(() => searchInputRef.current?.focus(), 100);
+  };
+
+  const handleSearchBlur = () => {
+    if (!searchQuery) {
+      setIsSearchExpanded(false);
+    }
+  };
 
   return (
     <nav className={`fixed w-full z-50 transition-colors duration-300 ${isScrolled ? 'bg-netflix-black' : 'bg-gradient-to-b from-black/80 to-transparent'}`}>
@@ -157,8 +171,26 @@ function Navbar() {
           </div>
         </div>
         <div className="flex items-center gap-6 text-white">
-          <Search className="w-5 h-5 cursor-pointer opacity-50 hover:opacity-100 transition-opacity" title="Search (Coming Soon)" />
-          <span className="hidden md:block text-sm">Kids</span>
+          
+          <div className="flex items-center">
+            {onSearchChange ? (
+              <div className={`flex items-center transition-all duration-300 ${isSearchExpanded ? 'border border-white bg-black/60 px-2 py-1' : ''}`}>
+                <Search className="w-5 h-5 cursor-pointer hover:text-gray-300" onClick={handleSearchClick} />
+                <input 
+                  ref={searchInputRef}
+                  type="text" 
+                  placeholder="Titles, people, genres"
+                  value={searchQuery || ''}
+                  onChange={(e) => onSearchChange(e.target.value)}
+                  onBlur={handleSearchBlur}
+                  className={`bg-transparent text-sm text-white placeholder-gray-400 focus:outline-none transition-all duration-300 ${isSearchExpanded ? 'w-48 md:w-64 ml-2 opacity-100' : 'w-0 opacity-0'}`}
+                />
+              </div>
+            ) : (
+              <Search className="w-5 h-5 cursor-pointer opacity-50 hover:opacity-100 transition-opacity" title="Search (Coming Soon)" />
+            )}
+          </div>
+
           <Bell className="w-5 h-5 cursor-pointer opacity-50 hover:opacity-100 transition-opacity" title="Notifications (Coming Soon)" />
           <div className="flex items-center gap-2 cursor-pointer group relative">
             <div className="w-8 h-8 bg-blue-500 rounded text-xs flex items-center justify-center font-bold">H</div>
@@ -273,81 +305,123 @@ function Row({ title, movies }) {
 }
 
 function Home() {
-  const [categories, setCategories] = React.useState([]);
-  const [featured, setFeatured] = React.useState(FEATURED_MOVIE);
+    const [categories, setCategories] = React.useState([]);
+    const [allMovies, setAllMovies] = React.useState([]);
+    const [featured, setFeatured] = React.useState(FEATURED_MOVIE);
+    const [searchQuery, setSearchQuery] = React.useState("");
 
-  React.useEffect(() => {
-    fetch('/api/movies')
-      .then(res => res.json())
-      .then(data => {
-        if (data && data.length > 0) {
+    React.useEffect(() => {
+      fetch('/api/movies')
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.length > 0) {
+             setAllMovies(data);
            
-           // Create buckets to hold all 85 movies
-           const trending = [];
-           const thrills = [];
-           const comedies = [];
-           const scifi = [];
-           const docs = [];
-           const action = [];
+             const trending = [];
+             const thrills = [];
+             const comedies = [];
+             const scifi = [];
+             const action = [];
+             const docs = [];
 
-           data.forEach((movie, i) => {
-             const genres = (movie.genres || []).map(g => g.toLowerCase());
-             const mood = (movie.mood || []).map(m => m.toLowerCase());
+             data.forEach((movie, i) => {
+               const genres = (movie.genres || '').toLowerCase();
+               const mood = (movie.mood || '').toLowerCase();
+               if (genres.includes("comedy") || mood.includes("funny") || mood.includes("silly")) {
+                 comedies.push(movie);
+               } else if (genres.includes("sci-fi") || genres.includes("fantasy")) {
+                 scifi.push(movie);
+               } else if (genres.includes("thriller") || genres.includes("horror") || mood.includes("intense")) {
+                 thrills.push(movie);
+               } else if (genres.includes("documentary") || genres.includes("family")) {
+                 docs.push(movie);
+               } else if (genres.includes("action") || genres.includes("adventure") || mood.includes("fast-paced")) {
+                 action.push(movie);
+               } else {
+                 trending.push(movie); // catch-all
+               }
              
-             if (genres.includes("comedy") || mood.includes("funny") || mood.includes("whimsical")) {
-               comedies.push(movie);
-             } else if (genres.includes("sci-fi") || genres.includes("fantasy")) {
-               scifi.push(movie);
-             } else if (genres.includes("thriller") || genres.includes("horror") || mood.includes("intense")) {
-               thrills.push(movie);
-             } else if (genres.includes("documentary") || genres.includes("family")) {
-               docs.push(movie);
-             } else if (genres.includes("action") || genres.includes("adventure") || mood.includes("fast-paced")) {
-               action.push(movie);
-             } else {
-               trending.push(movie); // catch-all
-             }
-             
-             // Just force some balance if trending is too empty
-             if (i % 7 === 0) trending.push(movie);
-           });
-
-           const chunked = [
-             { title: "Wheel Spinners (Trending)", movies: [...new Set(trending)] },
-             { title: "Squeak-Inducing Thrills", movies: thrills },
-             { title: "Cheeky Comedies", movies: comedies },
-             { title: "Cage-Free Sci-Fi", movies: scifi },
-             { title: "High-Speed Pursuits", movies: action },
-             { title: "Critically Acclaimed Fluff", movies: docs }
-           ].filter(c => c.movies.length > 0);
-
-           setCategories(chunked);
-           
-           // Set the first movie as the featured one
-           if (data.length > 0) {
-             setFeatured({
-               title: data[0].title,
-               description: data[0].synopsis,
-               heroImage: data[0].img
+               // Just force some balance if trending is too empty
+               if (i % 7 === 0) trending.push(movie);
              });
-           }
-        }
-      })
-      .catch(e => console.error("Failed to fetch movies", e));
-  }, []);
 
-  return (
-    <>
-      <Navbar />
-      <Hero featured={featured} />
-      <div className="-mt-32 relative z-20 pb-20">
-        {categories.map((cat, idx) => (
-          <Row key={idx} title={cat.title} movies={cat.movies} />
-        ))}
-      </div>
-    </>
-  );
-}
+             const chunked = [
+               { title: "Wheel Spinners (Trending)", movies: [...new Set(trending)] },
+               { title: "Squeak-Inducing Thrills", movies: thrills },
+               { title: "Cheeky Comedies", movies: comedies },
+               { title: "Cage-Free Sci-Fi", movies: scifi },
+               { title: "High-Speed Pursuits", movies: action },
+               { title: "Critically Acclaimed Fluff", movies: docs }
+             ].filter(c => c.movies.length > 0);
+
+             setCategories(chunked);
+           
+             // Set the first movie as the featured one
+             if (data.length > 0) {
+               setFeatured({
+                 title: data[0].title,
+                 description: data[0].synopsis,
+                 heroImage: data[0].img
+               });
+             }
+          }
+        })
+        .catch(e => console.error("Failed to fetch movies", e));
+    }, []);
+
+    const searchResults = React.useMemo(() => {
+      if (!searchQuery.trim()) return [];
+      const lowerQuery = searchQuery.toLowerCase();
+      return allMovies.filter(m => 
+        (m.title && m.title.toLowerCase().includes(lowerQuery)) ||
+        (m.synopsis && m.synopsis.toLowerCase().includes(lowerQuery)) ||
+        (m.genres && m.genres.toLowerCase().includes(lowerQuery))
+      );
+    }, [searchQuery, allMovies]);
+
+    return (
+      <>
+        <Navbar searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+        {searchQuery.trim() ? (
+          <div className="pt-32 px-4 md:px-12 pb-20 min-h-screen">
+            <h2 className="text-2xl font-bold text-gray-400 mb-8">
+              Search results for "{searchQuery}"
+            </h2>
+            {searchResults.length > 0 ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-10">
+                {searchResults.map((movie, idx) => (
+                  <Link key={idx} to={`/browse/${movie.uid}`} className="group relative aspect-[2/3] bg-gray-900 rounded-md overflow-hidden cursor-pointer">
+                    <img src={movie.img || movie.poster_filename || '/posters_real/poster_real_1.png'} alt={movie.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                      <div className="text-white font-bold text-sm md:text-md leading-tight mb-1">{movie.title}</div>
+                      <div className="flex items-center gap-2 mt-2">
+                        <Play className="w-6 h-6 fill-white" />
+                        <Plus className="w-6 h-6 border-2 border-gray-400 rounded-full p-1 hover:border-white" />
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center mt-20">
+                <p className="text-gray-400 text-lg">No matches found for "{searchQuery}".</p>
+                <p className="text-gray-500 mt-2">Try checking for typos or using different keywords.</p>
+              </div>
+            )}
+          </div>
+        ) : (
+          <>
+            <Hero featured={featured} />
+            <div className="-mt-32 relative z-20 pb-20">
+              {categories.map((cat, idx) => (
+                <Row key={idx} title={cat.title} movies={cat.movies} />
+              ))}
+            </div>
+          </>
+        )}
+      </>
+    );
+  }
 
 const EXTRACTED_DATA = {
   "1": {
