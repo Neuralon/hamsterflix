@@ -372,11 +372,25 @@ function Home() {
     const searchResults = React.useMemo(() => {
       if (!searchQuery.trim()) return [];
       const lowerQuery = searchQuery.toLowerCase();
-      return allMovies.filter(m => 
-        (m.title && m.title.toLowerCase().includes(lowerQuery)) ||
-        (m.synopsis && m.synopsis.toLowerCase().includes(lowerQuery)) ||
-        (m.genres && m.genres.toLowerCase().includes(lowerQuery))
-      );
+      return allMovies.filter(m => {
+        const titleMatch = m.title && m.title.toLowerCase().includes(lowerQuery);
+        const synMatch = m.synopsis && m.synopsis.toLowerCase().includes(lowerQuery);
+        const genreMatch = m.genres && m.genres.toLowerCase().includes(lowerQuery);
+        
+        let castMatch = false;
+        if (m.cast && typeof m.cast === 'string') {
+           try {
+             const parsedCast = JSON.parse(m.cast);
+             castMatch = parsedCast.some(c => 
+               (c.name && c.name.toLowerCase().includes(lowerQuery)) ||
+               (c.real_actor && c.real_actor.toLowerCase().includes(lowerQuery)) ||
+               (c.character && c.character.toLowerCase().includes(lowerQuery))
+             );
+           } catch(e) {}
+        }
+        
+        return titleMatch || synMatch || genreMatch || castMatch;
+      });
     }, [searchQuery, allMovies]);
 
     return (
