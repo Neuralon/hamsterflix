@@ -88,6 +88,7 @@ app.get('/api/movies/:id', (req, res) => {
       row.img = `/posters_real/${row.poster_filename}`;
       row.genres = JSON.parse(row.genres || '[]');
       row.mood = JSON.parse(row.mood || '[]');
+      row.cast = row.cast ? JSON.parse(row.cast) : [];
       row.inspiration = inspiration;
       res.json(row);
       db.close();
@@ -99,6 +100,7 @@ app.get('/api/movies/:id', (req, res) => {
               fakeRow.id = fakeRow.uid;
               fakeRow.genres = JSON.parse(fakeRow.genres || '[]');
               fakeRow.mood = JSON.parse(fakeRow.mood || '[]');
+              fakeRow.cast = fakeRow.cast ? JSON.parse(fakeRow.cast) : [];
               fakeRow.inspiration = inspiration;
               res.json(fakeRow);
           } else {
