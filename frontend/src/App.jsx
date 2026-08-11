@@ -469,7 +469,7 @@ function Home({ filterType = 'all' }) {
                  originals.push(movie);
                }
 
-               if (strictTags.includes("horror") || strictTags.includes("thriller") || strictTags.includes("terror") || strictTags.includes("scary") || strictTags.includes("suspense") || strictTags.includes("saw ") || strictTags.includes("alien") || strictTags.includes("jaws")) {
+               if (strictTags.includes("horror") || strictTags.includes("thriller") || strictTags.includes("terror") || strictTags.includes("scary") || strictTags.includes("suspense") || strictTags.includes("saw ") || strictTags.includes("alien") || strictTags.includes("jaws") || strictTags.includes("x-files") || strictTags.includes("sixth sense")) {
                  tinyTerrors.push(movie);
                } 
                if (strictTags.includes("sci-fi") || strictTags.includes("fantasy") || strictTags.includes("space") || strictTags.includes("future") || strictTags.includes("matrix") || strictTags.includes("terminator") || strictTags.includes("alien") || strictTags.includes("dune") || strictTags.includes("odyssey")) {
@@ -487,10 +487,10 @@ function Home({ filterType = 'all' }) {
                if (strictTags.includes("drama") || strictTags.includes("emotional") || strictTags.includes("shawshank") || strictTags.includes("requiem") || strictTags.includes("revenant") || strictTags.includes("midnight express") || strictTags.includes("forrest gump") || strictTags.includes("ocean")) {
                  cageDrama.push(movie);
                } 
-               if (strictTags.includes("mystery") || strictTags.includes("documentary") || strictTags.includes("beyond") || strictTags.includes("sherlock") || strictTags.includes("sixth sense") || strictTags.includes("x-files")) {
+               if (strictTags.includes("mystery") || strictTags.includes("documentary") || strictTags.includes("beyond") || strictTags.includes("sherlock")) {
                  beyondTheTubes.push(movie);
                } 
-               if (!strictTags.includes("comedy") && !strictTags.includes("horror") && !strictTags.includes("action") && !strictTags.includes("alien") && !strictTags.includes("saw") && !strictTags.includes("jaws")) {
+               if (!strictTags.includes("comedy") && !strictTags.includes("horror") && !strictTags.includes("action") && !strictTags.includes("alien") && !strictTags.includes("saw") && !strictTags.includes("jaws") && !strictTags.includes("x-files") && !strictTags.includes("sixth sense")) {
                  // Fallback for Critically Squeaked
                  criticallySqueaked.push(movie);
                }
