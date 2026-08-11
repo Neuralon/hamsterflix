@@ -475,7 +475,7 @@ function Home({ filterType = 'all' }) {
                if (strictTags.includes("sci-fi") || strictTags.includes("fantasy") || strictTags.includes("space") || strictTags.includes("future") || strictTags.includes("matrix") || strictTags.includes("terminator") || strictTags.includes("alien") || strictTags.includes("dune") || strictTags.includes("odyssey")) {
                  sciFur.push(movie);
                } 
-               if (strictTags.includes("family") || strictTags.includes("animation") || strictTags.includes("kids") || strictTags.includes("wonka") || strictTags.includes("zootopia") || strictTags.includes("pixar") || strictTags.includes("babe")) {
+               if ((strictTags.includes("family") || strictTags.includes("animation") || strictTags.includes("kids") || strictTags.includes("wonka") || strictTags.includes("zootopia") || strictTags.includes("pixar") || strictTags.includes("babe")) && !["horror", "thriller", "terror", "scary", "suspense", "saw ", "alien", "jaws", "revenant", "shawshank", "midnight express", "blade runner", "dune", "ocean", "maze runner", "fast & furious", "great escape", "doctor strange", "justice league", "crazy rich", "armageddon", "indiana jones", "mad max", "bond", "girl next door"].some(t => strictTags.includes(t))) {
                  familyFluff.push(movie);
                } 
                if (strictTags.includes("action") || strictTags.includes("adventure") || strictTags.includes("epic") || strictTags.includes("hero") || strictTags.includes("wild") || strictTags.includes("indiana jones") || strictTags.includes("mad max") || strictTags.includes("fast & furious") || strictTags.includes("bond") || strictTags.includes("mission: impossible") || strictTags.includes("mortal kombat")) {
