@@ -52,7 +52,7 @@ for i, task in enumerate(tasks):
     
     print(f"[{i+1}/{len(tasks)}] Generating photo for {real_actor} as {character} in {title}")
     
-    prompt = f"A photorealistic, highly detailed headshot of a REAL HAMSTER. The animal is 100% a furry rodent hamster, not a human. The hamster is playfully dressed in a tiny, cinematic {character} costume from the movie {title}, and its facial features faintly resemble the actor {real_actor}. It MUST have a hamster snout, hamster whiskers, and hamster paws. ABSOLUTELY NO human faces, NO human skin, NO people wearing ears. Must be a literal animal. 8k resolution, cinematic studio lighting, extreme realism."
+    prompt = f"A photorealistic, extreme close-up headshot of a literal CUTE FURRY HAMSTER dressed in a tiny, cinematic {character} costume from the movie {title}. The subject is 100% a hamster, a small rodent animal with furry hamster cheeks, a cute little pink snout, and prominent hamster whiskers. NO HUMAN FACES, NO HUMAN SKIN, NO PEOPLE. Just a tiny animal dressed up. Cinematic studio portrait lighting, 8k resolution, hyper-detailed animal photography."
     
     encoded_prompt = urllib.parse.quote(prompt)
     url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=400&height=400&nologo=true&model=flux"
