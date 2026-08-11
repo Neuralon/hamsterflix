@@ -478,7 +478,7 @@ function Home({ filterType = 'all' }) {
                if ((strictTags.includes("family") || strictTags.includes("animation") || strictTags.includes("kids") || strictTags.includes("wonka") || strictTags.includes("zootopia") || strictTags.includes("pixar") || strictTags.includes("babe")) && !["horror", "thriller", "terror", "scary", "suspense", "saw ", "alien", "jaws", "revenant", "shawshank", "midnight express", "blade runner", "dune", "ocean", "maze runner", "fast & furious", "great escape", "doctor strange", "justice league", "crazy rich", "armageddon", "indiana jones", "mad max", "bond", "girl next door"].some(t => strictTags.includes(t))) {
                  familyFluff.push(movie);
                } 
-               if (strictTags.includes("action") || strictTags.includes("adventure") || strictTags.includes("epic") || strictTags.includes("hero") || strictTags.includes("wild") || strictTags.includes("indiana jones") || strictTags.includes("mad max") || strictTags.includes("fast & furious") || strictTags.includes("bond") || strictTags.includes("mission: impossible") || strictTags.includes("mortal kombat")) {
+               if (strictTags.includes("action") || strictTags.includes("fast-paced") || strictTags.includes("hero") || strictTags.includes("wild") || strictTags.includes("mad max") || strictTags.includes("fast & furious") || strictTags.includes("bond") || strictTags.includes("mission: impossible") || strictTags.includes("mortal kombat")) {
                  wildWhiskers.push(movie);
                } 
                if ((strictTags.includes("comedy") || strictTags.includes("funny") || strictTags.includes("silly") || strictTags.includes("sitcom") || strictTags.includes("romance") || strictTags.includes("romantic") || strictTags.includes("how i met")) && !strictTags.includes("action") && !strictTags.includes("adventure") && !strictTags.includes("fantasy") && !strictTags.includes("guardians") && !strictTags.includes("jurassic")) {
@@ -487,10 +487,10 @@ function Home({ filterType = 'all' }) {
                if (strictTags.includes("drama") || strictTags.includes("emotional") || strictTags.includes("shawshank") || strictTags.includes("requiem") || strictTags.includes("revenant") || strictTags.includes("midnight express") || strictTags.includes("forrest gump") || strictTags.includes("ocean")) {
                  cageDrama.push(movie);
                } 
-               if (strictTags.includes("mystery") || strictTags.includes("documentary") || strictTags.includes("beyond") || strictTags.includes("sherlock")) {
+               if (strictTags.includes("adventure") || strictTags.includes("epic") || strictTags.includes("indiana jones") || strictTags.includes("mystery") || strictTags.includes("documentary") || strictTags.includes("beyond") || strictTags.includes("whimsical") || strictTags.includes("enchanting") || strictTags.includes("sherlock") || strictTags.includes("sixth sense") || strictTags.includes("x-files") || strictTags.includes("jurassic")) {
                  beyondTheTubes.push(movie);
                } 
-               if (!strictTags.includes("comedy") && !strictTags.includes("horror") && !strictTags.includes("action") && !strictTags.includes("alien") && !strictTags.includes("saw") && !strictTags.includes("jaws") && !strictTags.includes("x-files") && !strictTags.includes("sixth sense")) {
+               if (!strictTags.includes("comedy") && !strictTags.includes("horror") && !strictTags.includes("action") && !strictTags.includes("alien") && !strictTags.includes("saw") && !strictTags.includes("jaws")) {
                  // Fallback for Critically Squeaked
                  criticallySqueaked.push(movie);
                }
