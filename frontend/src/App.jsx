@@ -481,7 +481,7 @@ function Home({ filterType = 'all' }) {
                if (strictTags.includes("action") || strictTags.includes("fast-paced") || strictTags.includes("hero") || strictTags.includes("wild") || strictTags.includes("mad max") || strictTags.includes("fast & furious") || strictTags.includes("bond") || strictTags.includes("mission: impossible") || strictTags.includes("mortal kombat") || strictTags.includes("kindergarten cop") || strictTags.includes("great escape")) {
                  wildWhiskers.push(movie);
                } 
-               if ((strictTags.includes("comedy") || strictTags.includes("funny") || strictTags.includes("silly") || strictTags.includes("sitcom") || strictTags.includes("romance") || strictTags.includes("romantic") || strictTags.includes("how i met") || strictTags.includes("girl next door")) && !strictTags.includes("action") && !strictTags.includes("adventure") && !strictTags.includes("fantasy") && !strictTags.includes("guardians") && !strictTags.includes("jurassic") && !strictTags.includes("sci-fi") && !strictTags.includes("science fiction") && !strictTags.includes("armageddon")) {
+               if (((strictTags.includes("comedy") || strictTags.includes("funny") || strictTags.includes("silly") || strictTags.includes("sitcom") || strictTags.includes("romance") || strictTags.includes("romantic") || strictTags.includes("how i met") || strictTags.includes("girl next door")) && !strictTags.includes("action") && !strictTags.includes("adventure") && !strictTags.includes("fantasy") && !strictTags.includes("guardians") && !strictTags.includes("jurassic") && !strictTags.includes("sci-fi") && !strictTags.includes("science fiction") && !strictTags.includes("armageddon")) || title.includes("hamstergarden cop") || title.includes("squeak") || title.includes("hamsters of the galaxy") || title.includes("hamster at the museum")) {
                  cheekyComedies.push(movie);
                } 
                if (strictTags.includes("drama") || strictTags.includes("emotional") || strictTags.includes("shawshank") || strictTags.includes("requiem") || strictTags.includes("revenant") || strictTags.includes("midnight express") || strictTags.includes("forrest gump") || strictTags.includes("ocean") || strictTags.includes("maze runner") || strictTags.includes("time machine")) {
@@ -3599,9 +3599,9 @@ function MovieDetail() {
           
               <div className="w-full max-w-6xl aspect-video bg-gray-900 rounded-lg overflow-hidden relative shadow-2xl border border-gray-800">
                  {extractedData.id ? (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black">
+                     <div className="absolute inset-0 flex items-center justify-center bg-black">
                        <video autoPlay loop controls className="w-full h-full object-cover z-0 relative">
-                         <source src={`${import.meta.env.VITE_MEDIA_BASE || ""}/trailers/trailer_${extractedData.id}.mp4?v=${Date.now()}`} type="video/mp4" />
+                         <source src={`${import.meta.env.VITE_MEDIA_BASE || ""}/trailers/${['7cfa24537c2a4196b3873a3baefe28e0', 'be7b3b9127124e3ca7058f9aca07a46d', 'ab0c61b36e8845259959dbcc37951911', '144bf5a4bbc541c582b6878cce09b688'].includes(extractedData.id) ? (extractedData.id === '7cfa24537c2a4196b3873a3baefe28e0' ? '83' : extractedData.id === 'be7b3b9127124e3ca7058f9aca07a46d' ? '84' : extractedData.id === 'ab0c61b36e8845259959dbcc37951911' ? '85' : '86') + '_trailer' : 'trailer_' + extractedData.id}.mp4?v=${Date.now()}`} type="video/mp4" />
                          Your browser does not support the video tag.
                        </video>
                     </div>
@@ -3697,7 +3697,7 @@ function MovieDetail() {
                     </div>
 
                     {/* Script & Storyboard Section */}
-                    {details.scriptData && (details.scriptData.script_content || details.scriptData.scenes) && (
+                    {details.scriptData && (details.scriptData.script_content || details.scriptData.scenes) && !['7cfa24537c2a4196b3873a3baefe28e0', 'be7b3b9127124e3ca7058f9aca07a46d', 'ab0c61b36e8845259959dbcc37951911', '144bf5a4bbc541c582b6878cce09b688'].includes(extractedData.id) && (
                       <div className="mt-8 pt-6 border-t border-gray-800">
                         <h3 className="text-xl font-bold mb-4 text-white">Trailer Storyboard & Script</h3>
                         {details.scriptData.trailer_style && (
