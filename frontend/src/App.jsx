@@ -393,7 +393,7 @@ function Row({ title, movies }) {
           className="flex gap-4 overflow-x-auto hide-scrollbar pb-8 pt-4 -mt-4 px-2 -mx-2"
         >
           {items.map((movie, idx) => (
-            <Link key={`${movie.uid || movie.id}-${idx}-${movie.title}`} to={`/movie/${movie.uid || movie.id}`} className="relative flex-none w-[140px] md:w-[200px] h-[210px] md:h-[300px] transition-all duration-300 hover:scale-110 hover:z-20 origin-center cursor-pointer rounded-md overflow-hidden shadow-lg border border-transparent hover:border-gray-500">
+            <Link key={`${movie.uid || movie.id}-${idx}-${movie.title}`} to={`/movie/${movie.uid || movie.id}`} className="relative flex-none w-[160px] md:w-[240px] h-[240px] md:h-[360px] transition-all duration-300 hover:scale-110 hover:z-20 origin-center cursor-pointer rounded-md overflow-hidden shadow-lg border border-transparent hover:border-gray-500">
               <img src={`${import.meta.env.VITE_MEDIA_BASE || ""}${movie.img || (movie.poster_filename ? '/posters_real/' + movie.poster_filename : '/posters_real/poster_real_1.png')}`} alt={movie.title} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
                 <p className="text-white font-bold text-sm md:text-base drop-shadow-md text-center">{movie.title}</p>
