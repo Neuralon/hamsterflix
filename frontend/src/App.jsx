@@ -3696,6 +3696,43 @@ function MovieDetail() {
                       </p>
                     </div>
 
+                    {/* Script & Storyboard Section */}
+                    {details.scriptData && (details.scriptData.script_content || details.scriptData.scenes) && (
+                      <div className="mt-8 pt-6 border-t border-gray-800">
+                        <h3 className="text-xl font-bold mb-4 text-white">Trailer Storyboard & Script</h3>
+                        {details.scriptData.trailer_style && (
+                          <p className="text-sm text-gray-400 mb-2"><span className="text-gray-500 font-semibold">Style:</span> {details.scriptData.trailer_style}</p>
+                        )}
+                        {details.scriptData.audio_direction && (
+                          <p className="text-sm text-gray-400 mb-4"><span className="text-gray-500 font-semibold">Audio Direction:</span> {details.scriptData.audio_direction}</p>
+                        )}
+                        {details.scriptData.script_content && (
+                          <div className="bg-gray-900/50 p-4 rounded-lg mb-6 border border-gray-700">
+                            <h4 className="text-sm text-gray-500 font-semibold mb-2 uppercase tracking-wide">Script / Voiceover</h4>
+                            <p className="text-gray-300 italic whitespace-pre-wrap">{details.scriptData.script_content}</p>
+                          </div>
+                        )}
+                        {details.scriptData.scenes && details.scriptData.scenes.length > 0 && (
+                          <div>
+                            <h4 className="text-sm text-gray-500 font-semibold mb-3 uppercase tracking-wide">Storyboard Sequences</h4>
+                            <div className="space-y-3">
+                              {details.scriptData.scenes.map((scene, i) => {
+                                const match = scene.match(/^\[(.*?)\]\s*(.*)$/);
+                                const label = match ? match[1] : `Scene ${i + 1}`;
+                                const text = match ? match[2] : scene;
+                                return (
+                                  <div key={i} className="flex gap-4">
+                                    <div className="text-yellow-500/80 font-mono text-xs w-32 shrink-0 pt-1 leading-snug">[{label}]</div>
+                                    <div className="text-gray-300 text-sm leading-relaxed">{text}</div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
                     <div className="flex gap-4 pt-8">
                       <button onClick={() => setIsPlaying(true)} className="flex items-center justify-center gap-2 bg-white text-black px-8 py-3 rounded hover:bg-white/80 transition-colors font-bold text-lg md:text-xl min-w-[140px]">
                          <Play className="w-6 h-6 fill-current" /> Play

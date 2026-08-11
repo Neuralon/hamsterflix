@@ -80,7 +80,8 @@ app.get('/api/movies/:id', (req, res) => {
   try {
     scriptsData = JSON.parse(fs.readFileSync(scriptsPath, 'utf8'));
   } catch(e) {}
-  const inspiration = scriptsData.find(x => x.uid === uid)?.inspiration || null;
+  const scriptObj = scriptsData.find(x => x.uid === uid) || {};
+  const inspiration = scriptObj.inspiration || null;
   
   db.get('SELECT * FROM real_movies WHERE uid = ?', [uid], (err, row) => {
     if (row) {
@@ -90,6 +91,7 @@ app.get('/api/movies/:id', (req, res) => {
       row.mood = JSON.parse(row.mood || '[]');
       row.cast = row.cast ? JSON.parse(row.cast) : [];
       row.inspiration = inspiration;
+      row.scriptData = scriptObj;
       res.json(row);
       db.close();
     } else {
@@ -102,6 +104,7 @@ app.get('/api/movies/:id', (req, res) => {
               fakeRow.mood = JSON.parse(fakeRow.mood || '[]');
               fakeRow.cast = fakeRow.cast ? JSON.parse(fakeRow.cast) : [];
               fakeRow.inspiration = inspiration;
+              fakeRow.scriptData = scriptObj;
               res.json(fakeRow);
           } else {
               res.status(404).json({ error: 'Not found' });
