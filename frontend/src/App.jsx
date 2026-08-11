@@ -469,7 +469,7 @@ function Home({ filterType = 'all' }) {
                  originals.push(movie);
                }
 
-               if (strictTags.includes("horror") || strictTags.includes("thriller") || strictTags.includes("terror") || strictTags.includes("scary") || strictTags.includes("suspense") || strictTags.includes("saw ") || strictTags.includes("alien") || strictTags.includes("jaws") || strictTags.includes("x-files") || strictTags.includes("sixth sense")) {
+               if ((strictTags.includes("horror") || strictTags.includes("thriller") || strictTags.includes("terror") || strictTags.includes("scary") || strictTags.includes("suspense") || strictTags.includes("saw ") || strictTags.includes("alien") || strictTags.includes("jaws") || strictTags.includes("x-files") || strictTags.includes("sixth sense")) && !strictTags.includes("girl next door")) {
                  tinyTerrors.push(movie);
                } 
                if (strictTags.includes("sci-fi") || strictTags.includes("fantasy") || strictTags.includes("space") || strictTags.includes("future") || strictTags.includes("matrix") || strictTags.includes("terminator") || strictTags.includes("alien") || strictTags.includes("dune") || strictTags.includes("odyssey") || strictTags.includes("planet of the apes") || strictTags.includes("superman")) {
