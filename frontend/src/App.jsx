@@ -442,10 +442,16 @@ function Home({ filterType = 'all' }) {
            
              const trending = [];
              const thrills = [];
-             const comedies = [];
-             const scifi = [];
-             const action = [];
-             const docs = [];
+             const wheelTrends = [];
+             const originals = [];
+             const wildWhiskers = [];
+             const cheekyComedies = [];
+             const familyFluff = [];
+             const tinyTerrors = [];
+             const sciFur = [];
+             const cageDrama = [];
+             const beyondTheTubes = [];
+             const criticallySqueaked = [];
 
              filteredData.forEach((movie, i) => {
                const genres = (Array.isArray(movie.genres) ? movie.genres.join(' ') : (movie.genres || '')).toLowerCase();
@@ -454,31 +460,57 @@ function Home({ filterType = 'all' }) {
                const synopsis = (movie.synopsis || '').toLowerCase();
                const tags = genres + ' ' + mood + ' ' + title + ' ' + synopsis;
 
-               if (tags.includes("comedy") || tags.includes("funny") || tags.includes("silly") || tags.includes("humorous") || tags.includes("amusing")) {
-                 comedies.push(movie);
-               } else if (tags.includes("sci-fi") || tags.includes("fantasy") || tags.includes("space") || tags.includes("alien")) {
-                 scifi.push(movie);
-               } else if (tags.includes("thriller") || tags.includes("horror") || tags.includes("intense") || tags.includes("mystery") || tags.includes("suspense")) {
-                 thrills.push(movie);
-               } else if (tags.includes("documentary") || tags.includes("family") || tags.includes("drama") || tags.includes("romance") || tags.includes("animation") || tags.includes("heartwarming") || tags.includes("cute") || tags.includes("love")) {
-                 docs.push(movie);
-               } else if (tags.includes("action") || tags.includes("adventure") || tags.includes("fast-paced") || tags.includes("epic") || tags.includes("hero")) {
-                 action.push(movie);
-               } else {
-                 trending.push(movie); // catch-all
+               // Wheel Trends
+               if (movie.is_new_popular === 1 || i % 6 === 0) {
+                 wheelTrends.push(movie);
                }
-             
-               // Just force some balance if trending is too empty
-               if (i % 7 === 0) trending.push(movie);
+               
+               // Originals
+               if (!movie.poster_filename || movie.img?.includes('posters_ai') || i % 5 === 0) {
+                 originals.push(movie);
+               }
+
+               if (tags.includes("comedy") || tags.includes("funny") || tags.includes("silly") || tags.includes("humorous") || tags.includes("amusing")) {
+                 cheekyComedies.push(movie);
+               } 
+               if (tags.includes("horror") || tags.includes("thriller") || tags.includes("terror") || tags.includes("scary") || tags.includes("suspense") || tags.includes("intense")) {
+                 tinyTerrors.push(movie);
+               } 
+               if (tags.includes("sci-fi") || tags.includes("fantasy") || tags.includes("space") || tags.includes("alien") || tags.includes("future")) {
+                 sciFur.push(movie);
+               } 
+               if (tags.includes("family") || tags.includes("animation") || tags.includes("kids") || tags.includes("heartwarming") || tags.includes("cute")) {
+                 familyFluff.push(movie);
+               } 
+               if (tags.includes("action") || tags.includes("adventure") || tags.includes("fast-paced") || tags.includes("epic") || tags.includes("hero") || tags.includes("wild")) {
+                 wildWhiskers.push(movie);
+               } 
+               if (tags.includes("drama") || tags.includes("emotional")) {
+                 cageDrama.push(movie);
+               } 
+               if (tags.includes("mystery") || tags.includes("documentary") || tags.includes("beyond") || tags.includes("whimsical") || tags.includes("enchanting")) {
+                 beyondTheTubes.push(movie);
+               } 
+               if (!tags.includes("comedy") && !tags.includes("horror") && !tags.includes("action")) {
+                 // Fallback for Critically Squeaked
+                 criticallySqueaked.push(movie);
+               }
+               if (i % 7 === 0) {
+                 criticallySqueaked.push(movie);
+               }
              });
 
              const chunked = [
-               { title: "Wheel Spinners (Trending)", movies: [...new Set(trending)] },
-               { title: "Squeak-Inducing Thrills", movies: thrills },
-               { title: "Cheeky Comedies", movies: comedies },
-               { title: "Cage-Free Sci-Fi", movies: scifi },
-               { title: "High-Speed Pursuits", movies: action },
-               { title: "Critically Acclaimed Fluff", movies: docs }
+               { title: "Wheel Trends", movies: [...new Set(wheelTrends)] },
+               { title: "Hamsterflix Originals", movies: [...new Set(originals)] },
+               { title: "Wild Whiskers", movies: [...new Set(wildWhiskers)] },
+               { title: "Cheeky Comedies", movies: [...new Set(cheekyComedies)] },
+               { title: "Family Fluff", movies: [...new Set(familyFluff)] },
+               { title: "Tiny Terrors", movies: [...new Set(tinyTerrors)] },
+               { title: "Sci-Fur", movies: [...new Set(sciFur)] },
+               { title: "Cage Drama", movies: [...new Set(cageDrama)] },
+               { title: "Beyond the Tubes", movies: [...new Set(beyondTheTubes)] },
+               { title: "Critically Squeaked", movies: [...new Set(criticallySqueaked)] }
              ].filter(c => c.movies.length > 0);
 
              setCategories(chunked);
